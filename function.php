@@ -14,6 +14,67 @@ function error422($message){
     exit();
 }
 
+//Update Student list
+
+function updateStudent($studentInput, $studentparams){
+
+    global $conn;
+
+    if(!isset($studentparams['id'])){
+        return error422('student id not found in url');
+    }elseif($studentparams['id'] == null){
+        return error422('Enter the student id');
+    }
+
+    $studentid = mysqli_real_escape_string($conn, $studentparams['id']); 
+    $studentname = mysqli_real_escape_string($conn, $studentInput['student_name']);
+    $studentclass = mysqli_real_escape_string($conn, $studentInput['student_class']);
+    $rollno = mysqli_real_escape_string($conn, $studentInput['roll_no']);
+    $teachername = mysqli_real_escape_string($conn, $studentInput['teacher_name']);
+    $parentname = mysqli_real_escape_string($conn, $studentInput['parent_name']);
+    $parentph = mysqli_real_escape_string($conn, $studentInput['parent_ph']);
+
+    if(empty(trim($studentname))){
+     return error422('Enter the student name');
+    }elseif(empty(trim($studentclass))){
+        return error422('Enter the student class');
+    }elseif(empty(trim($rollno))){
+        return error422('Enter the rollno');
+    }elseif(empty(trim($teachername))){
+        return error422('Enter the teacher name');
+    }elseif(empty(trim($parentname))){
+        return error422('Enter the parent name');
+    }elseif(empty(trim($parentph))){
+        return error422('Enter the parent ph');
+    }else{
+
+       $query = "UPDATE `division_1` SET `student_name` = '$studentname', `student_class` ='$studentclass' , `roll_no` = '$rollno', `teacher_name` = '$teachername', `parent_name` = '$parentname', `parent_ph` ='$parentph' WHERE `id` = $studentid LIMIT 1";
+       $result = mysqli_query($conn, $query);
+
+     if($result){
+  
+        $data = [
+            'status' => 200,
+            'message' => 'Student Created Successfully',
+        ];
+        header("HTTP/1.0 200 Created");
+        echo json_encode($data);
+         
+
+     }else{
+        $data = [
+            'status' => 500,
+            'message' => 'Internal Server Error',
+        ];
+        header("HTTP/1.0 500 Internal Server Error");
+        echo json_encode($data);
+     }
+
+    }
+
+}
+
+
 //postFunction
 
 function storeStudent($studentInput){
