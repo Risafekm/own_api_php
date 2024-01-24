@@ -14,6 +14,44 @@ function error422($message){
     exit();
 }
 
+
+//delete student
+
+function deleteStudent($studentparams){
+ 
+    global $conn;
+
+    if(!isset($studentparams['id'])){
+        return error422("Student id not found in url ");
+    }elseif($studentparams['id'] == null){
+    return error422("Enter the student id");
+    }
+
+    $studentid = mysqli_real_escape_string($conn, $studentparams['id']);
+    $query = "DELETE FROM `division_1` WHERE `id` = '$studentid' LIMIT 1";
+    $result = mysqli_query($conn ,$query);
+
+    if($result){
+
+        $data = [
+            'status' => 200,
+            'messag' => 'Student deleted successfully',
+        ];
+        header("HTTP/1.0 200  success");
+        return json_encode($data);
+
+    }else{
+        $data = [
+            'status' => 404,
+            'messag' => 'Student not found',
+        ];
+        header("HTTP/1.0 400  Not found");
+        return json_encode($data);
+    }
+
+
+}
+
 //Update Student list
 
 function updateStudent($studentInput, $studentparams){
