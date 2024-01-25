@@ -210,4 +210,56 @@ return json_encode($data);
 
 }
 
+
+//1 to 1 data fetching
+
+function getStudent($studentparams){
+
+    global $conn;
+    
+    
+    if($studentparams['id'] == null){
+        return error422('Enter your id');
+       }
+    
+    $studentId = mysqli_real_escape_string($conn, $studentparams['id']);
+    
+    $query = "SELECT * FROM `division_1` WHERE `id` = '$studentId' LIMIT 1";
+    $result = mysqli_query($conn,$query);
+    
+    if($result){
+    
+     if(mysqli_num_rows($result) == 1){
+     
+        $res = mysqli_fetch_assoc($result);
+        $data = [
+            'status' => 200,
+            'message' => 'Student Fetched Successfully',
+            'data' => $res
+        ];
+        header("HTTP/1.0 200  Success");
+        return json_encode($data);
+    
+    
+     }else{
+     $data = [
+            'status' => 404,
+            'message' => 'No Student Found',
+        ];
+        header("HTTP/1.0 404  Not found");
+        return json_encode($data);
+     }
+    
+    }else{
+        $data = [
+            'status' => 500,
+            'message' => 'Internal Server Error',
+        ];
+        header("HTTP/1.0 500  Internal Server Error");
+        return json_encode($data);
+    }
+    
+    }
+    
+
 ?>
